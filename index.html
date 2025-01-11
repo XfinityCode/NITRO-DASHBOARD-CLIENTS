@@ -1,622 +1,587 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Administratif - Nitro-Hosting</title>
-    <style>
-        :root {
-            --primary-color: #4a90e2;
-            --background-color: #0a0a1a;
-            --card-background: rgba(42, 42, 74, 0.9);
-            --text-color: white;
-            --danger-color: #e53e3e;
-            --success-color: #38a169;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administratif - Nitro-Hosting</title>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --background-color: #0a0a1a;
+      --card-background: rgba(42, 42, 74, 0.9);
+      --text-color: white;
+      --danger-color: #e53e3e;
+      --success-color: #38a169;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
 
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
 
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
 
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--card-background);
-            border-top-color: var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--card-background);
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-        .navbar {
-            background-color: var(--background-color);
-            padding: 1rem 2rem;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
-            backdrop-filter: blur(10px);
-        }
+    .navbar {
+      background-color: var(--background-color);
+      padding: 1rem 2rem;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+      backdrop-filter: blur(10px);
+    }
 
-        .navbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .navbar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
 
-        .logo img {
-            height: 40px;
-            width: auto;
-        }
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
 
-        .logo-text {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            background: rgba(74, 144, 226, 0.1);
-        }
+    .logo-text {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      background: rgba(74, 144, 226, 0.1);
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 6rem auto 2rem;
-            padding: 0 1rem;
-        }
+    .container {
+      max-width: 1200px;
+      margin: 6rem auto 2rem;
+      padding: 0 1rem;
+    }
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
 
-        .card {
-            background: var(--card-background);
-            border-radius: 20px;
-            padding: 1.5rem;
-            border: 1px solid rgba(74, 144, 226, 0.1);
-        }
+    .card {
+      background: var(--card-background);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid rgba(74, 144, 226, 0.1);
+    }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
 
-        .form-group .helper-text {
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 0.25rem;
-        }
+    .form-group .helper-text {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 0.25rem;
+    }
 
-        .input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid rgba(74, 144, 226, 0.2);
-            background-color: rgba(10, 10, 26, 0.8);
-            color: var(--text-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
+    .input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(74, 144, 226, 0.2);
+      background-color: rgba(10, 10, 26, 0.8);
+      color: var(--text-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
 
-        .input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-        }
+    .input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            width: 100%;
-        }
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      width: 100%;
+    }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            background-color: #357abd;
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
-        }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background-color: #357abd;
+      box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+    }
 
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: var(--text-color);
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-        }
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: var(--text-color);
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+    }
 
-        .btn-danger:hover {
-            background-color: #c53030;
-        }
+    .btn-danger:hover {
+      background-color: #c53030;
+    }
 
-        .storage-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
+    .storage-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
 
-        .stat-item {
-            background-color: rgba(10, 10, 26, 0.8);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-        }
+    .stat-item {
+      background-color: rgba(10, 10, 26, 0.8);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
 
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
 
-        .offer-preview {
-            background: rgba(10, 10, 26, 0.8);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
+    .offer-preview {
+      background: rgba(10, 10, 26, 0.8);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
 
-        .offer-specs {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-top: 0.5rem;
-        }
+    .offer-specs {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 0.5rem;
+    }
 
-        .storage-bar {
-            width: 100%;
-            height: 8px;
-            background-color: rgba(10, 10, 26, 0.8);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
+    .storage-bar {
+      width: 100%;
+      height: 8px;
+      background-color: rgba(10, 10, 26, 0.8);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
 
-        .storage-bar-fill {
-            height: 100%;
-            background-color: var(--primary-color);
-            transition: width 0.3s ease;
-        }
+    .storage-bar-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      transition: width 0.3s ease;
+    }
 
-        .client-list {
-            margin-top: 1rem;
-            max-height: 500px;
-            overflow-y: auto;
-        }
+    .client-list {
+      margin-top: 1rem;
+      max-height: 500px;
+      overflow-y: auto;
+    }
 
-        .client-item {
-            background-color: rgba(10, 10, 26, 0.8);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            transition: transform 0.3s ease;
-        }
+    .client-item {
+      background-color: rgba(10, 10, 26, 0.8);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      transition: transform 0.3s ease;
+    }
 
-        .client-item:hover {
-            transform: translateY(-2px);
-        }
+    .client-item:hover {
+      transform: translateY(-2px);
+    }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 1rem;
-            border-radius: 8px;
-            background: var(--card-background);
-            color: var(--text-color);
-            z-index: 1000;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 1rem;
+      border-radius: 8px;
+      background: var(--card-background);
+      color: var(--text-color);
+      z-index: 1000;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
 
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .storage-stats {
-                grid-template-columns: 1fr;
-            }
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .storage-stats {
+        grid-template-columns: 1fr;
+      }
+      .navbar {
+        padding: 1rem;
+      }
+      .logo-text {
+        font-size: 1.2rem;
+        padding: 0.4rem 0.8rem;
+      }
+    }
 
-            .navbar {
-                padding: 1rem;
-            }
-
-            .logo-text {
-                font-size: 1.2rem;
-                padding: 0.4rem 0.8rem;
-            }
-        }
-    </style>
+    .download-buttons {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+  </style>
 </head>
-
 <body>
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner"></div>
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="logo">
+        <img src="http://www.image-heberg.fr/files/17363002484038730628.png" alt="Logo">
+        <div class="logo-text">Nitro-Hosting</div>
+      </div>
     </div>
+  </nav>
 
-    <div id="toast" class="toast"></div>
-
-    <nav class="navbar">
-        <div class="navbar-content">
-            <div class="logo">
-                <img src="http://www.image-heberg.fr/files/17363002484038730628.png" alt="Logo">
-                <div class="logo-text">Nitro-Hosting</div>
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- Formulaire d'ajout -->
+      <div class="card">
+        <h2>Ajouter un Client</h2>
+        <form id="clientForm" class="form">
+          <div class="form-group">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" class="input" required>
+          </div>
+          <div class="form-group">
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" class="input" required>
+          </div>
+          <div class="form-group">
+            <label for="offre">Offre</label>
+            <select id="offre" class="input" required>
+              <option value="Développement">Développement - 2€/mois</option>
+              <option value="Essentiel">Essentiel - 5€/mois</option>
+              <option value="Avancé">Avancé - 13€/mois</option>
+              <option value="Excellence">Excellence - 18€/mois</option>
+            </select>
+            <div id="offerPreview" class="offer-preview">
+              <!-- Aperçu de l'offre -->
             </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Ajouter le Client</button>
+        </form>
+      </div>
+
+      <!-- Statistiques et Liste -->
+      <div>
+        <div class="card">
+          <h2>État du Stockage</h2>
+          <div class="storage-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="totalSpace">1000</div>
+              <div>Go Total</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="usedSpace">0</div>
+              <div>Go Utilisé</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="remainingSpace">1000</div>
+              <div>Go Restant</div>
+            </div>
+          </div>
+          <div class="storage-bar">
+            <div class="storage-bar-fill" id="storageBarFill"></div>
+          </div>
         </div>
-    </nav>
 
-    <div class="container">
-        <div class="dashboard-grid">
-            <!-- Formulaire d'ajout -->
-            <div class="card">
-                <h2>Ajouter un Client</h2>
-                <form id="clientForm" class="form">
-                    <div class="form-group">
-                        <label for="nom">Nom</label>
-                        <input type="text" id="nom" class="input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="prenom">Prénom</label>
-                        <input type="text" id="prenom" class="input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="offre">Offre</label>
-                        <select id="offre" class="input" required>
-                            <option value="Développement">Développement - 2€/mois</option>
-                            <option value="Essentiel">Essentiel - 5€/mois</option>
-                            <option value="Avancé">Avancé - 13€/mois</option>
-                            <option value="Excellence">Excellence - 18€/mois</option>
-                        </select>
-                        <div id="offerPreview" class="offer-preview">
-                            <!-- Le contenu sera généré dynamiquement par JavaScript -->
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Ajouter le Client</button>
-                </form>
-            </div>
-
-            <!-- Statistiques et Liste -->
-            <div>
-                <!-- Carte des statistiques -->
-                <div class="card">
-                    <h2>État du Stockage</h2>
-                    <div class="storage-stats">
-                        <div class="stat-item">
-                            <div class="stat-value" id="totalSpace">1000</div>
-                            <div>Go Total</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="usedSpace">0</div>
-                            <div>Go Utilisé</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="remainingSpace">1000</div>
-                            <div>Go Restant</div>
-                        </div>
-                    </div>
-                    <div class="storage-bar">
-                        <div class="storage-bar-fill" id="storageBarFill"></div>
-                    </div>
-                </div>
-
-                <!-- Liste des clients -->
-                <div class="card" style="margin-top: 1rem;">
-                    <h2>Liste des Clients</h2>
-                    <div id="clientList" class="client-list">
-                        <!-- Le contenu sera généré dynamiquement par JavaScript -->
-                    </div>
-                </div>
-            </div>
+        <div class="card" style="margin-top: 1rem;">
+          <h2>Liste des Clients</h2>
+          <div id="clientList" class="client-list">
+            <!-- Contenu généré dynamiquement -->
+          </div>
+          <div class="download-buttons">
+            <button id="downloadPdf" class="btn btn-primary">Télécharger PDF</button>
+            <button id="downloadJson" class="btn btn-primary">Télécharger JSON</button>
+            <input type="file" id="uploadJson" accept="application/json" style="display:none;">
+            <button id="uploadButton" class="btn btn-primary">Uploader JSON</button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Configuration PHP -->
-    <?php
-    $db_config = array(
-        'host' => '46.105.155.136:3306',
-        'dbname' => 's2_lakeview',
-        'user' => 'u2_o0uH78ziTc',
-        'pass' => 'gMn5t=IEno.Rxnn.u!J9^LMC'
-    );
-    ?>
+  <!-- Inclusion de jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // Configuration des offres
+    const OFFRES = {
+      'Développement': { prix: 2, ram: '8 GO RAM DDR3 ECC', stockage: 10, cpu: '2X INTEL XEON E5-2695 v4', bandPassante: '10 Gbps/s', slots: 64, emoji: '💻' },
+      'Essentiel':     { prix: 5, ram: '12 GO RAM DDR3 ECC', stockage: 30, cpu: '2X INTEL XEON E5-2695 v4', bandPassante: '10 Gbps/s', slots: 64, emoji: '🚀' },
+      'Avancé':        { prix: 13, ram: '24 GO RAM DDR3 ECC', stockage: 60, cpu: '2X INTEL XEON E5-2695 v4', bandPassante: '10 Gbps/s', slots: 64, emoji: '⚡' },
+      'Excellence':    { prix: 18, ram: '32 GO RAM DDR3 ECC', stockage: 100, cpu: '2X INTEL XEON E5-2695 v4', bandPassante: '10 Gbps/s', slots: 64, emoji: '🏆' }
+    };
 
-    <script>
-        // Configuration des offres
-        const OFFRES = {
-            'Développement': {
-                prix: 2,
-                ram: '8 GO RAM DDR3 ECC',
-                stockage: 10,
-                cpu: '2X INTEL XEON E5-2695 v4',
-                bandPassante: '10 Gbps/s',
-                slots: 64,
-                emoji: '💻'
-            },
-            'Essentiel': {
-                prix: 5,
-                ram: '12 GO RAM DDR3 ECC',
-                stockage: 30,
-                cpu: '2X INTEL XEON E5-2695 v4',
-                bandPassante: '10 Gbps/s',
-                slots: 64,
-                emoji: '🚀'
-            },
-            'Avancé': {
-                prix: 13,
-                ram: '24 GO RAM DDR3 ECC',
-                stockage: 60,
-                cpu: '2X INTEL XEON E5-2695 v4',
-                bandPassante: '10 Gbps/s',
-                slots: 64,
-                emoji: '⚡'
-            },
-            'Excellence': {
-                prix: 18,
-                ram: '32 GO RAM DDR3 ECC',
-                stockage: 100,
-                cpu: '2X INTEL XEON E5-2695 v4',
-                bandPassante: '10 Gbps/s',
-                slots: 64,
-                emoji: '🏆'
-            }
+    class ClientManager {
+      constructor() {
+        this.TOTAL_SPACE = 1000;
+        this.clients = this.loadClientsFromLocalStorage();
+        this.initializeEventListeners();
+        this.setupOfferPreview();
+        this.updateDashboard();
+        this.updateStorageStats();
+      }
+
+      showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.backgroundColor = type === 'success' ? 'green' : 'red';
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+      }
+
+      setupOfferPreview() {
+        const offreSelect = document.getElementById('offre');
+        const previewDiv = document.getElementById('offerPreview');
+        const updatePreview = () => {
+          const selectedOffer = OFFRES[offreSelect.value];
+          previewDiv.innerHTML = `
+            <div class="offer-specs">
+              <div>${selectedOffer.emoji} ${offreSelect.value}</div>
+              <div>${selectedOffer.cpu}</div>
+              <div>${selectedOffer.ram}</div>
+              <div>Stockage: ${selectedOffer.stockage} Go SSD</div>
+              <div>Bande passante: ${selectedOffer.bandPassante}</div>
+              <div>Slots: ${selectedOffer.slots}</div>
+              <div style="margin-top: 0.5rem; font-weight: bold; color: var(--primary-color)">
+                ${selectedOffer.prix}€ TTC/mois
+              </div>
+            </div>
+          `;
         };
+        offreSelect.addEventListener('change', updatePreview);
+        updatePreview();
+      }
 
-        class ClientManager {
-            constructor() {
-                this.TOTAL_SPACE = 1000;
-                this.initializeEventListeners();
-                this.loadClients();
-                this.setupOfferPreview();
-            }
+      loadClientsFromLocalStorage() {
+        const savedData = localStorage.getItem('clientsData');
+        return savedData ? JSON.parse(savedData) : [];
+      }
 
-            showLoading() {
-                document.getElementById('loadingOverlay').style.display = 'flex';
-            }
+      saveClientsToLocalStorage() {
+        localStorage.setItem('clientsData', JSON.stringify(this.clients));
+      }
 
-            hideLoading() {
-                document.getElementById('loadingOverlay').style.display = 'none';
-            }
-
-            showToast(message, type = 'success') {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.style.backgroundColor = type === 'success' ? 'var(--success-color)' : 'var(--danger-color)';
-                toast.style.display = 'block';
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 3000);
-            }
-
-            setupOfferPreview() {
-                const offreSelect = document.getElementById('offre');
-                const previewDiv = document.getElementById('offerPreview');
-
-                const updatePreview = () => {
-                    const selectedOffer = OFFRES[offreSelect.value];
-                    previewDiv.innerHTML = `
-                        <div class="offer-specs">
-                            <div>${selectedOffer.emoji} ${offreSelect.value}</div>
-                            <div>${selectedOffer.cpu}</div>
-                            <div>${selectedOffer.ram}</div>
-                            <div>Stockage: ${selectedOffer.stockage} Go SSD</div>
-                            <div>Bande passante: ${selectedOffer.bandPassante}</div>
-                            <div>Slots: ${selectedOffer.slots}</div>
-                            <div style="margin-top: 0.5rem; font-weight: bold; color: var(--primary-color)">
-                                ${selectedOffer.prix}€ TTC/mois
-                            </div>
-                        </div>
-                    `;
-                };
-
-                offreSelect.addEventListener('change', updatePreview);
-                updatePreview(); // Initial preview
-            }
-
-            async loadClients() {
-                this.showLoading();
-                try {
-                    const response = await fetch('api.php?action=get_clients');
-                    const data = await response.json();
-                    if (data.success) {
-                        await this.updateDashboard(data.clients);
-                        this.updateStorageStats();
-                    }
-                } catch (error) {
-                    this.showToast('Erreur lors du chargement des clients', 'error');
-                    console.error('Erreur:', error);
-                }
-                this.hideLoading();
-            }
-
-            async addClient(formData) {
-                const selectedOffer = OFFRES[formData.offre];
-                if (selectedOffer.stockage > this.getRemainingSpace()) {
-                    this.showToast(`Espace insuffisant pour l'offre ${formData.offre}`, 'error');
-                    return;
-                }
-
-                this.showLoading();
-                try {
-                    const response = await fetch('api.php?action=add_client', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            ...formData,
-                            ...selectedOffer
-                        })
-                    });
-
-                    const data = await response.json();
-                    if (data.success) {
-                        this.showToast('Client ajouté avec succès');
-                        await this.loadClients();
-                    } else {
-                        this.showToast('Erreur lors de l\'ajout du client', 'error');
-                    }
-                } catch (error) {
-                    this.showToast('Erreur de connexion', 'error');
-                    console.error('Erreur:', error);
-                }
-                this.hideLoading();
-            }
-
-            async deleteClient(id) {
-                if (!confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
-                    return;
-                }
-
-                this.showLoading();
-                try {
-                    const response = await fetch(`api.php?action=delete_client&id=${id}`);
-                    const data = await response.json();
-                    if (data.success) {
-                        this.showToast('Client supprimé avec succès');
-                        await this.loadClients();
-                    } else {
-                        this.showToast('Erreur lors de la suppression', 'error');
-                    }
-                } catch (error) {
-                    this.showToast('Erreur de connexion', 'error');
-                    console.error('Erreur:', error);
-                }
-                this.hideLoading();
-            }
-
-            updateStorageStats() {
-                const usedSpace = this.getUsedSpace();
-                const remainingSpace = this.getRemainingSpace();
-                
-                document.getElementById('usedSpace').textContent = usedSpace;
-                document.getElementById('remainingSpace').textContent = remainingSpace;
-                
-                const usagePercentage = (usedSpace / this.TOTAL_SPACE) * 100;
-                document.getElementById('storageBarFill').style.width = `${usagePercentage}%`;
-            }
-
-            async updateDashboard(clients) {
-                const clientList = document.getElementById('clientList');
-                clientList.innerHTML = '';
-                
-                if (!clients || clients.length === 0) {
-                    clientList.innerHTML = '<div class="client-item">Aucun client enregistré</div>';
-                    return;
-                }
-
-                clients.forEach(client => {
-                    const clientElement = document.createElement('div');
-                    clientElement.className = 'client-item';
-                    clientElement.innerHTML = `
-                        <div class="client-info">
-                            <h3>${client.nom} ${client.prenom}</h3>
-                            <div class="client-specs">
-                                <div>${client.offre} ${OFFRES[client.offre].emoji}</div>
-                                <div>${client.cpu}</div>
-                                <div>${client.ram}</div>
-                                <div>Stockage: ${client.espace_disque} Go SSD</div>
-                                <div>Bande passante: ${client.bande_passante}</div>
-                                <div>Prix: ${client.prix}€/mois</div>
-                                <div>Inscription: ${new Date(client.date_creation).toLocaleDateString('fr-FR')}</div>
-                            </div>
-                        </div>
-                        <button class="btn btn-danger" onclick="clientManager.deleteClient(${client.id})">
-                            Supprimer
-                        </button>
-                    `;
-                    clientList.appendChild(clientElement);
-                });
-            }
-
-            getUsedSpace() {
-                return this.clients?.reduce((total, client) => total + parseInt(client.espace_disque), 0) || 0;
-            }
-
-            getRemainingSpace() {
-                return this.TOTAL_SPACE - this.getUsedSpace();
-            }
-
-            initializeEventListeners() {
-                document.getElementById('clientForm').addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const formData = {
-                        nom: document.getElementById('nom').value,
-                        prenom: document.getElementById('prenom').value,
-                        offre: document.getElementById('offre').value
-                    };
-                    await this.addClient(formData);
-                    e.target.reset();
-                });
-            }
+      addClient(formData) {
+        const selectedOffer = OFFRES[formData.offre];
+        if(selectedOffer.stockage > this.getRemainingSpace()) {
+          this.showToast(`Espace insuffisant pour l'offre ${formData.offre}`, 'error');
+          return;
         }
+        formData.id = Date.now();
+        this.clients.push({ ...formData, ...selectedOffer });
+        this.saveClientsToLocalStorage();
+        this.showToast('Client ajouté avec succès');
+        this.updateDashboard();
+        this.updateStorageStats();
+      }
 
-        // Initialisation du gestionnaire de clients
-        const clientManager = new ClientManager();
-    </script>
+      deleteClient(id) {
+        if(!confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) return;
+        this.clients = this.clients.filter(client => client.id !== id);
+        this.saveClientsToLocalStorage();
+        this.showToast('Client supprimé avec succès');
+        this.updateDashboard();
+        this.updateStorageStats();
+      }
+
+      updateStorageStats() {
+        const usedSpace = this.clients.reduce((sum, client) => sum + parseInt(client.stockage), 0);
+        const remainingSpace = this.TOTAL_SPACE - usedSpace;
+        document.getElementById('usedSpace').textContent = usedSpace;
+        document.getElementById('remainingSpace').textContent = remainingSpace;
+        const usagePercentage = (usedSpace / this.TOTAL_SPACE) * 100;
+        document.getElementById('storageBarFill').style.width = `${usagePercentage}%`;
+      }
+
+      updateDashboard() {
+        const clientList = document.getElementById('clientList');
+        clientList.innerHTML = '';
+        if(this.clients.length === 0) {
+          clientList.innerHTML = '<div class="client-item">Aucun client enregistré</div>';
+          return;
+        }
+        this.clients.forEach(client => {
+          const clientElement = document.createElement('div');
+          clientElement.className = 'client-item';
+          clientElement.innerHTML = `
+            <div class="client-info">
+              <h3>${client.nom} ${client.prenom}</h3>
+              <div class="client-specs">
+                <div>${client.offre} ${OFFRES[client.offre]?.emoji || ''}</div>
+                <div>${client.cpu}</div>
+                <div>${client.ram}</div>
+                <div>Stockage: ${client.stockage} Go SSD</div>
+                <div>Bande passante: ${client.bandPassante}</div>
+                <div>Prix: ${client.prix}€/mois</div>
+              </div>
+            </div>
+            <button class="btn btn-danger" onclick="clientManager.deleteClient(${client.id})">
+              Supprimer
+            </button>
+          `;
+          clientList.appendChild(clientElement);
+        });
+      }
+
+      getRemainingSpace() {
+        return this.TOTAL_SPACE - this.clients.reduce((sum, client) => sum + parseInt(client.stockage), 0);
+      }
+
+      initializeEventListeners() {
+        document.getElementById('clientForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const formData = {
+            nom: document.getElementById('nom').value,
+            prenom: document.getElementById('prenom').value,
+            offre: document.getElementById('offre').value
+          };
+          this.addClient(formData);
+          e.target.reset();
+        });
+        document.getElementById('downloadPdf').addEventListener('click', () => this.downloadPDF());
+        document.getElementById('downloadJson').addEventListener('click', () => this.downloadJSON());
+        document.getElementById('uploadButton').addEventListener('click', () => document.getElementById('uploadJson').click());
+        document.getElementById('uploadJson').addEventListener('change', (e) => this.uploadJSON(e));
+      }
+
+      downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        let y = 10;
+        doc.setFontSize(16);
+        doc.setTextColor(66, 144, 226); 
+        doc.text("Liste des Clients", 10, y);
+        y += 10;
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        this.clients.forEach(client => {
+          doc.text(`Nom: ${client.nom} ${client.prenom}`, 10, y);
+          y += 7;
+          doc.text(`Offre: ${client.offre}`, 10, y);
+          y += 7;
+          doc.text(`CPU: ${client.cpu} | RAM: ${client.ram}`, 10, y);
+          y += 7;
+          doc.text(`Stockage: ${client.stockage} Go SSD | Bande passante: ${client.bandPassante}`, 10, y);
+          y += 10;
+          if(y > 270) {
+            doc.addPage();
+            y = 10;
+          }
+        });
+        doc.save("clients.pdf");
+      }
+
+      downloadJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.clients));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "clients.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+
+      uploadJSON(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            this.clients = JSON.parse(e.target.result);
+            this.saveClientsToLocalStorage();
+            this.updateDashboard();
+            this.updateStorageStats();
+            this.showToast("Données importées avec succès");
+          } catch(err) {
+            this.showToast("Erreur lors de l'importation", 'error');
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    const clientManager = new ClientManager();
+  </script>
 </body>
 </html>
